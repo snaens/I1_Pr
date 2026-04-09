@@ -24,9 +24,10 @@ Sie nun entsprechende Ausdrücke an, die überprüfen,
   (für u = 43)
 */
 
+#include <math.h>
 #include <stdio.h>
 
-int main () {
+int main() {
     int wert = 0;
 
     // 1
@@ -35,20 +36,30 @@ int main () {
     printf("1.Wert: %d\n", wert);
 
     // 2
-    unsigned short u = 254;
-    wert = u >> 8; // bits unter #9 ignorieren (< 256)
-    for (int i = 0; i <= 7; i++) { wert |= u>>1; } // restlichen bits nach Trues absuchen
+    unsigned short u = 256;
+    // cast zu bool funktioniert nicht
+    // das hier rechnet quasi `> 0`
+    wert = u >> 8 ? true : false;
     printf("2.Wert: %b\n", wert);
 
     // 3
+    // 0000 0010 0000 0000
     u = 520;
-    wert = u >> 6 & 1;
+    const int num_bits = sizeof(unsigned short) * 8;
+    wert = u >> (num_bits - 7) & 1; // bits um 16 - 7 shiften, 7. Bit von links ist jetzt erstes Bit rechts
     printf("3.Wert: %d\n", wert);
 
     // 4
-    x = 129;
-    wert = /*!(*/x >> 7; //& 1);
-    printf("4.Wert: %b\n", wert);
+    x = 1025;
+    wert = x & ~127 // alle Bits unterhalb 128 verwerfen
+                    ? true : false; // bitmask zu boolean umwandeln
+    printf("4.Wert: %d\n", wert);
+
+    // 5
+    u = 43;
+    //   = u % 4
+    wert = u & 3 ? false : true; // bitmask zu boolean invertiert umwandeln
+    printf("5.Wert: %d\n", wert);
 
     return 0;
 }
